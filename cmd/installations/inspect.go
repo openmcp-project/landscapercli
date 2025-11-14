@@ -6,15 +6,14 @@ import (
 	"fmt"
 	"os"
 
-	inspect "github.com/gardener/landscapercli/cmd/installations/inspect"
-
 	"github.com/go-logr/logr"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"sigs.k8s.io/yaml"
 
-	"github.com/gardener/landscapercli/pkg/logger"
-	"github.com/gardener/landscapercli/pkg/util"
+	inspect "github.com/openmcp-project/landscapercli/cmd/installations/inspect"
+	"github.com/openmcp-project/landscapercli/pkg/logger"
+	"github.com/openmcp-project/landscapercli/pkg/util"
 )
 
 type statusOptions struct {

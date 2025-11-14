@@ -4,7 +4,7 @@ import (
 	"context"
 	"os"
 
-	"github.com/gardener/landscaper/apis/core/v1alpha1"
+	"github.com/openmcp-project/landscaper/apis/core/v1alpha1"
 	"github.com/spf13/cobra"
 )
 

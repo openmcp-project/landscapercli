@@ -4,11 +4,11 @@
 
 ## About this project
 
-The Landscaper CLI supports users to develop, maintain, and test components processed by the [Landscaper](https://github.com/gardener/landscaper). This comprises the handling of objects like component descriptors, blueprints, installations, etc.
+The Landscaper CLI supports users to develop, maintain, and test components processed by the [Landscaper](https://github.com/openmcp-project/landscaper). This comprises the handling of objects like component descriptors, blueprints, installations, etc.
 
 ## Requirements and Setup
 
-Install the latest release via [Nix](https://nixos.org), download binaries directly from [GitHub Releases](https://github.com/gardener/landscapercli/releases), or build and install directly from source.
+Install the latest release via [Nix](https://nixos.org), download binaries directly from [GitHub Releases](https://github.com/openmcp-project/landscapercli/releases), or build and install directly from source.
 
 **Remark:** This version of the Landscaper CLI requires that you have installed helm version 3.7 or higher
 due to some fundamental API changes especially with respect to the handling of helm charts stored as OCI resources.
@@ -46,7 +46,7 @@ os=darwin # choose between darwin, linux
 arch=amd64 # choose between amd64
 
 # Get latest version, unzip, make executable
-curl -LO "https://github.com/gardener/landscapercli/releases/latest/download/landscapercli-${os}-${arch}.gz"
+curl -LO "https://github.com/openmcp-project/landscapercli/releases/latest/download/landscapercli-${os}-${arch}.gz"
 gunzip landscapercli-${os}-${arch}.gz
 chmod +x ./landscapercli-${os}-${arch}
 
@@ -70,7 +70,7 @@ with the [quickstart command](docs/commands/quickstart).
 A description how to access an OCI registry which requires authentication with the Landscaper CLI can be found [here](docs/login-to-oci-registry.md).
 
 Other examples:
-https://github.com/gardener/landscaper/blob/master/docs/tutorials/02-simple-import.md
+https://github.com/openmcp-project/landscaper/blob/master/docs/tutorials/02-simple-import.md
 
 ## Support, Feedback, Contributing
 

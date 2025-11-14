@@ -11,7 +11,7 @@ import (
 
 	"github.com/spf13/cobra/doc"
 
-	"github.com/gardener/landscapercli/cmd"
+	"github.com/openmcp-project/landscapercli/cmd"
 )
 
 func main() {

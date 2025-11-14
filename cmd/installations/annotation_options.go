@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/gardener/landscaper/apis/core/v1alpha1"
-	"github.com/gardener/landscaper/pkg/landscaper/installations"
+	"github.com/openmcp-project/landscaper/apis/core/v1alpha1"
+	"github.com/openmcp-project/landscaper/pkg/landscaper/installations"
 	"github.com/spf13/pflag"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/gardener/landscapercli/pkg/util"
+	"github.com/openmcp-project/landscapercli/pkg/util"
 )
 
 type annotationOptions struct {

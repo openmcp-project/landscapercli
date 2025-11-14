@@ -127,7 +127,7 @@ TODO: verify special /etc/hosts domain name for docker push
 ### Landscaper Values
 
 The landscaper values are used during the internal helm install of the landscaper chart. Therefore, all values from the 
-chart can be specified. For more options see also [here](https://github.com/gardener/landscaper/blob/master/charts/landscaper/values.yaml)
+chart can be specified. For more options see also [here](https://github.com/openmcp-project/landscaper/blob/master/charts/landscaper/values.yaml)
 
 A minimum working example goes as follows:
 ```yaml

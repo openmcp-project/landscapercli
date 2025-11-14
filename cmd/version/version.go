@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gardener/landscapercli/pkg/version"
-
 	"github.com/spf13/cobra"
+
+	"github.com/openmcp-project/landscapercli/pkg/version"
 )
 
 func NewVersionCommand() *cobra.Command {

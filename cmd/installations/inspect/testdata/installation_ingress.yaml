@@ -26,7 +26,7 @@ spec:
       resourceName: ingress-nginx-blueprint
   componentDescriptor:
     ref:
-      componentName: github.com/gardener/landscaper/ingress-nginx
+      componentName: github.com/openmcp-project/landscaper/ingress-nginx
       repositoryContext:
         baseUrl: europe-docker.pkg.dev/sap-gcp-cp-k8s-stable-hub/landscaper-examples/tutorials/components
         type: ociRegistry

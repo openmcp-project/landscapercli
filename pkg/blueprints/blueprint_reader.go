@@ -4,8 +4,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/gardener/landscaper/apis/core/v1alpha1"
-	"github.com/gardener/landscaper/pkg/api"
+	"github.com/openmcp-project/landscaper/apis/core/v1alpha1"
+	"github.com/openmcp-project/landscaper/pkg/api"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
 )
 

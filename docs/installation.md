@@ -22,10 +22,10 @@ If this problem is resolved also the installation with the following commands is
 ```shell script
 export GO111MODULE=on
 
-go get github.com/gardener/landscapercli/landscaper-cli
+go get github.com/openmcp-project/landscapercli/landscaper-cli
 
 # or with a specific version
-go get github.com/gardener/landscapercli/landscaper-cli@v0.0.1
+go get github.com/openmcp-project/landscapercli/landscaper-cli@v0.0.1
 
 ```
 ## Enable Shell Autocompletion

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	lsv1alpha1 "github.com/gardener/landscaper/apis/core/v1alpha1"
-	containerv1alpha1 "github.com/gardener/landscaper/apis/deployer/container/v1alpha1"
-	helmv1alpha1 "github.com/gardener/landscaper/apis/deployer/helm/v1alpha1"
+	lsv1alpha1 "github.com/openmcp-project/landscaper/apis/core/v1alpha1"
+	containerv1alpha1 "github.com/openmcp-project/landscaper/apis/deployer/container/v1alpha1"
+	helmv1alpha1 "github.com/openmcp-project/landscaper/apis/deployer/helm/v1alpha1"
 	"sigs.k8s.io/yaml"
 )
 

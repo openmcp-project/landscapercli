@@ -10,12 +10,12 @@ import (
 	"os"
 	"strings"
 
-	lsv1alpha1 "github.com/gardener/landscaper/apis/core/v1alpha1"
+	lsv1alpha1 "github.com/openmcp-project/landscaper/apis/core/v1alpha1"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"sigs.k8s.io/yaml"
 
-	"github.com/gardener/landscapercli/pkg/util"
+	"github.com/openmcp-project/landscapercli/pkg/util"
 )
 
 // TypedTargetCreator is a function which takes a context and the common target creation options

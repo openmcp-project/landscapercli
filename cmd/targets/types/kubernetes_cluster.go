@@ -4,12 +4,12 @@ import (
 	"context"
 	"os"
 
-	lsv1alpha1 "github.com/gardener/landscaper/apis/core/v1alpha1"
-	"github.com/gardener/landscaper/apis/core/v1alpha1/targettypes"
+	lsv1alpha1 "github.com/openmcp-project/landscaper/apis/core/v1alpha1"
+	"github.com/openmcp-project/landscaper/apis/core/v1alpha1/targettypes"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	"github.com/gardener/landscapercli/pkg/util"
+	"github.com/openmcp-project/landscapercli/pkg/util"
 )
 
 type kubernetesClusterOpts struct {

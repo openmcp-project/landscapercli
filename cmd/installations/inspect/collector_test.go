@@ -3,7 +3,7 @@ package tree
 import (
 	"testing"
 
-	"github.com/gardener/landscaper/test/utils/envtest"
+	"github.com/openmcp-project/landscaper/test/utils/envtest"
 	"github.com/stretchr/testify/assert"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
