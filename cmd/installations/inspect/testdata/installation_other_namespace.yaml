@@ -16,7 +16,7 @@ spec:
       resourceName: echo-server-blueprint
   componentDescriptor:
     ref:
-      componentName: github.com/gardener/landscaper/echo-server
+      componentName: github.com/openmcp-project/landscaper/echo-server
       repositoryContext:
         baseUrl: europe-docker.pkg.dev/sap-gcp-cp-k8s-stable-hub/landscaper-examples/tutorials/components
         type: ociRegistry

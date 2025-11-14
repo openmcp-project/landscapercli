@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	lsv1alpha1 "github.com/gardener/landscaper/apis/core/v1alpha1"
-	"github.com/gardener/landscaper/pkg/landscaper/installations"
+	lsv1alpha1 "github.com/openmcp-project/landscaper/apis/core/v1alpha1"
+	"github.com/openmcp-project/landscaper/pkg/landscaper/installations"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 

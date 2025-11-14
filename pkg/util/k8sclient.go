@@ -8,7 +8,7 @@ import (
 
 	"k8s.io/client-go/tools/clientcmd"
 
-	lsv1alpha1 "github.com/gardener/landscaper/apis/core/v1alpha1"
+	lsv1alpha1 "github.com/openmcp-project/landscaper/apis/core/v1alpha1"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 )
 

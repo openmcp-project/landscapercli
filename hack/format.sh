@@ -21,7 +21,7 @@ if [[ ${1:-} == "--verify" ]]; then
   shift
 fi
 
-tmp=$("${FORMATTER}" -l $write_mode -local=github.com/gardener/landscapercli $("$PROJECT_ROOT/hack/unfold.sh" --clean --no-unfold "$@"))
+tmp=$("${FORMATTER}" -l $write_mode -local=github.com/openmcp-project/landscapercli $("$PROJECT_ROOT/hack/unfold.sh" --clean --no-unfold "$@"))
 
 if [[ -z ${write_mode} ]] && [[ ${tmp} ]]; then
   echo "unformatted files detected, please run 'make format'" 1>&2

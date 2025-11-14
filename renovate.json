@@ -60,7 +60,7 @@
       "minimumReleaseAge": "0 days",
       "enabled": true,
       "matchPackageNames": [
-        "github.com/gardener/landscaper{/,}**"
+        "github.com/openmcp-project/landscaper{/,}**"
       ],
       "rebaseWhen": "auto"
     },

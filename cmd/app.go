@@ -11,13 +11,13 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/gardener/landscapercli/cmd/blueprints"
-	"github.com/gardener/landscapercli/cmd/completion"
-	"github.com/gardener/landscapercli/cmd/installations"
-	"github.com/gardener/landscapercli/cmd/quickstart"
-	"github.com/gardener/landscapercli/cmd/targets"
-	"github.com/gardener/landscapercli/cmd/version"
-	"github.com/gardener/landscapercli/pkg/logger"
+	"github.com/openmcp-project/landscapercli/cmd/blueprints"
+	"github.com/openmcp-project/landscapercli/cmd/completion"
+	"github.com/openmcp-project/landscapercli/cmd/installations"
+	"github.com/openmcp-project/landscapercli/cmd/quickstart"
+	"github.com/openmcp-project/landscapercli/cmd/targets"
+	"github.com/openmcp-project/landscapercli/cmd/version"
+	"github.com/openmcp-project/landscapercli/pkg/logger"
 )
 
 func NewLandscaperCliCommand(ctx context.Context) *cobra.Command {

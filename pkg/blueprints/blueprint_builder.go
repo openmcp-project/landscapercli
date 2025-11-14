@@ -3,10 +3,10 @@ package blueprints
 import (
 	"fmt"
 
-	"github.com/gardener/landscaper/apis/core/v1alpha1"
-	"github.com/gardener/landscaper/apis/core/v1alpha1/targettypes"
+	"github.com/openmcp-project/landscaper/apis/core/v1alpha1"
+	"github.com/openmcp-project/landscaper/apis/core/v1alpha1/targettypes"
 
-	"github.com/gardener/landscapercli/pkg/util"
+	"github.com/openmcp-project/landscapercli/pkg/util"
 )
 
 type BlueprintBuilder struct {

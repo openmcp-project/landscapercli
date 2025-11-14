@@ -11,7 +11,7 @@ import (
 	"text/template"
 	"time"
 
-	lsv1alpha1 "github.com/gardener/landscaper/apis/core/v1alpha1"
+	lsv1alpha1 "github.com/openmcp-project/landscaper/apis/core/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -19,11 +19,11 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/gardener/landscapercli/cmd/quickstart"
-	"github.com/gardener/landscapercli/integration-test/tests"
-	inttestutil "github.com/gardener/landscapercli/integration-test/util"
-	"github.com/gardener/landscapercli/pkg/logger"
-	"github.com/gardener/landscapercli/pkg/util"
+	"github.com/openmcp-project/landscapercli/cmd/quickstart"
+	"github.com/openmcp-project/landscapercli/integration-test/tests"
+	inttestutil "github.com/openmcp-project/landscapercli/integration-test/util"
+	"github.com/openmcp-project/landscapercli/pkg/logger"
+	"github.com/openmcp-project/landscapercli/pkg/util"
 )
 
 var (

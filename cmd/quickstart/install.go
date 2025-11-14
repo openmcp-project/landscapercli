@@ -11,12 +11,6 @@ import (
 	"strings"
 	"time"
 
-	version2 "github.com/gardener/landscapercli/pkg/version"
-
-	"k8s.io/apimachinery/pkg/util/wait"
-
-	"sigs.k8s.io/yaml"
-
 	"github.com/go-logr/logr"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -24,11 +18,14 @@ import (
 	extv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	k8sErrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/tools/clientcmd"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/yaml"
 
-	"github.com/gardener/landscapercli/pkg/logger"
-	"github.com/gardener/landscapercli/pkg/util"
+	"github.com/openmcp-project/landscapercli/pkg/logger"
+	"github.com/openmcp-project/landscapercli/pkg/util"
+	version2 "github.com/openmcp-project/landscapercli/pkg/version"
 )
 
 const (

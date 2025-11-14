@@ -1,7 +1,7 @@
 package tree
 
 import (
-	lsv1alpha1 "github.com/gardener/landscaper/apis/core/v1alpha1"
+	lsv1alpha1 "github.com/openmcp-project/landscaper/apis/core/v1alpha1"
 )
 
 // InstallationTree contains the Installation and the references to Sub-Installations and the Execution.

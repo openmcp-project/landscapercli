@@ -19,8 +19,8 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/gardener/landscapercli/pkg/logger"
-	"github.com/gardener/landscapercli/pkg/util"
+	"github.com/openmcp-project/landscapercli/pkg/logger"
+	"github.com/openmcp-project/landscapercli/pkg/util"
 )
 
 type uninstallOptions struct {

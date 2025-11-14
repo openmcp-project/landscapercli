@@ -55,9 +55,9 @@ SPDX-License-Identifier: Apache-2.0
         ldflags = [
           "-s"
           "-w"
-          "-X github.com/gardener/landscapercli/pkg/version.LandscaperCliVersion=${version-raw}"
-          "-X github.com/gardener/landscapercli/pkg/version.gitTreeState=${state}"
-          "-X github.com/gardener/landscapercli/pkg/version.gitCommit=${gitCommit}"
+          "-X github.com/openmcp-project/landscapercli/pkg/version.LandscaperCliVersion=${version-raw}"
+          "-X github.com/openmcp-project/landscapercli/pkg/version.gitTreeState=${state}"
+          "-X github.com/openmcp-project/landscapercli/pkg/version.gitCommit=${gitCommit}"
         ];
 
         CGO_ENABLED = 0;
@@ -78,10 +78,10 @@ SPDX-License-Identifier: Apache-2.0
           description = "The landscaper-cli interacts with Gardener Landscaper";
           
           longDescription = ''
-            The landscape-cli supports users to develop, maintain, and test components processed by the [Gardener Landscaper](https://github.com/gardener/landscaper).
+            The landscape-cli supports users to develop, maintain, and test components processed by the [Gardener Landscaper](https://github.com/openmcp-project/landscaper).
             This comprises the handling of objects like component descriptors, blueprints, installations, etc.
           '';
-          homepage = "https://github.com/gardener/landscapercli";
+          homepage = "https://github.com/openmcp-project/landscapercli";
           license = licenses.asl20;
           platforms = supportedSystems;
         };

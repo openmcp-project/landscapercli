@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gardener/landscapercli/cmd"
+	"github.com/openmcp-project/landscapercli/cmd"
 )
 
 func main() {

@@ -6,18 +6,16 @@ import (
 	"os"
 	"time"
 
-	"k8s.io/apimachinery/pkg/util/wait"
-
-	inspect "github.com/gardener/landscapercli/cmd/installations/inspect"
-
 	"github.com/go-logr/logr"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/util/wait"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/gardener/landscapercli/pkg/logger"
-	"github.com/gardener/landscapercli/pkg/util"
+	inspect "github.com/openmcp-project/landscapercli/cmd/installations/inspect"
+	"github.com/openmcp-project/landscapercli/pkg/logger"
+	"github.com/openmcp-project/landscapercli/pkg/util"
 )
 
 type forceDeleteOptions struct {

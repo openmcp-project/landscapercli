@@ -1,5 +1,5 @@
 components:
-  - name: github.com/gardener/landscapercli
+  - name: github.com/openmcp-project/landscapercli
     version: ${CDVERSION}
     provider:
       name: sap.com
@@ -10,5 +10,5 @@ components:
         access:
           type: github
           commit: ${COMMIT_SHA}
-          repoUrl: github.com/gardener/landscapercli
+          repoUrl: github.com/openmcp-project/landscapercli
     componentReferences: []
