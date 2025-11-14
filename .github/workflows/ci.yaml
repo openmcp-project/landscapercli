@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest-8core
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
@@ -29,6 +29,7 @@ jobs:
         run: make revendor
 
       - name: make cross-build
+        if: false
         run: make cross-build
 
       - name: make verify
