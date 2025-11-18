@@ -1,0 +1,15 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - v*
+  workflow_dispatch:
+
+permissions:
+  packages: write
+
+jobs:
+  release_publish:
+   uses: openmcp-project/build/.github/workflows/publish.lib.yaml@main
+   secrets: inherit
