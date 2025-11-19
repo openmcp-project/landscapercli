@@ -43,9 +43,12 @@ test: ## Runs the tests.
 
 ##@ Build
 
-.PHONY: install-cli
-install-cli: ## Installs the CLI.
+.PHONY: install
+install: ## Installs the CLI.
 	@EFFECTIVE_VERSION=$(EFFECTIVE_VERSION) $(REPO_ROOT)/hack/install-cli.sh
+
+.PHONY: install-cli
+install-cli: install ## Alias for 'make install'.
 
 .PHONY: cross-build
 cross-build: ## Builds the binary for linux/amd64, linux/arm64, darwin/amd64, and darwin/arm64.
