@@ -30,7 +30,7 @@ fi
               -X github.com/openmcp-project/landscapercli/pkg/version.LandscaperCliVersion=$EFFECTIVE_VERSION \
               -X github.com/openmcp-project/landscapercli/pkg/version.gitTreeState=$([ -z git status --porcelain 2>/dev/null ] && echo clean || echo dirty) \
               -X github.com/openmcp-project/landscapercli/pkg/version.gitCommit=$(git rev-parse --verify HEAD)" \
-    ${PROJECT_ROOT}/landscaper-cli
+    ${PROJECT_ROOT}/cmd/landscapercli
 
     # create zipped file
     gzip -f -k "$bin_path"
