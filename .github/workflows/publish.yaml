@@ -86,22 +86,20 @@ jobs:
       - name: Cross Build
         run: |
           PROJECT_ROOT=$(pwd)
-          WORK_DIR=$(mktemp -d)
+          WORK_DIR=$(mktemp -d -p /mnt)
           echo "WORK_DIR=$WORK_DIR" >> $GITHUB_ENV
           mkdir -p ${WORK_DIR}
-          
+          echo "work dir: ${WORK_DIR}, free space: $(df -h ${WORK_DIR} | tail -1 | awk '{print $4}')"
+
           build_matrix=("linux,amd64" "linux,arm64" "darwin,amd64" "darwin,arm64", "windows,amd64")
 
           for i in "${build_matrix[@]}"; do
             IFS=',' read os arch <<< "${i}"
 
-            echo "Build $os/$arch version ${{ env.version}}"
+            echo "Building $os/$arch version ${{ env.version}}..."
             bin_path="${WORK_DIR}/landscapercli-$os-$arch"
 
-            echo "cd to project root: $PROJECT_ROOT"  
             cd "$PROJECT_ROOT"
-
-            echo "contents of project root/cmd: $(ls -la $PROJECT_ROOT/cmd)"
 
             CGO_ENABLED=0 GOOS=$os GOARCH=$arch GO111MODULE=on \
             go build -o $bin_path \
