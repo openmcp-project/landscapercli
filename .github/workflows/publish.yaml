@@ -86,7 +86,8 @@ jobs:
       - name: Cross Build
         run: |
           PROJECT_ROOT=$(pwd)
-          WORK_DIR=$(mktemp -d -p /mnt)
+          echo "Using /mnt $(ls -la /mnt)"
+          WORK_DIR="/mnt/dist"
           echo "WORK_DIR=$WORK_DIR" >> $GITHUB_ENV
           mkdir -p ${WORK_DIR}
           echo "work dir: ${WORK_DIR}, free space: $(df -h ${WORK_DIR} | tail -1 | awk '{print $4}')"
