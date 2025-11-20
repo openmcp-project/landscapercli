@@ -89,7 +89,8 @@ jobs:
           echo "Using /mnt $(ls -la /mnt)"
           WORK_DIR="/mnt/dist"
           echo "WORK_DIR=$WORK_DIR" >> $GITHUB_ENV
-          mkdir -p ${WORK_DIR}
+          sudo mkdir -p ${WORK_DIR}
+          sudo chmod 777 ${WORK_DIR}
           echo "work dir: ${WORK_DIR}, free space: $(df -h ${WORK_DIR} | tail -1 | awk '{print $4}')"
 
           build_matrix=("linux,amd64" "linux,arm64" "darwin,amd64" "darwin,arm64", "windows,amd64")
