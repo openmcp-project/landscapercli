@@ -86,6 +86,24 @@ jobs:
       - name: Cross Build
         run: |
           PROJECT_ROOT=$(pwd)
+
+          if [ "$GITHUB_ACTIONS" = "true" ]; then
+              echo "Running in GitHub Actions, performing cleanup to free up space"
+              # echo "=== disk-usage for /usr Level 2 ==="
+              # sudo du -xh --exclude=/proc --max-depth=2 / | sort -hr
+
+              echo "=== Deleting un-needed framework/tool dirs ==="
+
+              sudo rm -rf /usr/local/.ghcup || true # haskell installer: ~6.4GB
+              sudo rm -rf /usr/share/dotnet || true # dotnet: ~4GB
+              sudo rm -rf /usr/share/swift  || true # swift: ~3.2GB
+              sudo rm -rf /usr/lib/jvm || true      # jvm: ~1.5GB
+
+              # echo "=== Github Workspace Usage for $GITHUB_WORKSPACE ==="
+              # du -h --max-depth=1 "$GITHUB_WORKSPACE" | sort -hr
+          else
+              echo "Not running in GitHub Actions, skipping cleanup"
+          fi
           echo "Using /mnt $(ls -la /mnt)"
           WORK_DIR="/mnt/dist"
           echo "WORK_DIR=$WORK_DIR" >> $GITHUB_ENV
