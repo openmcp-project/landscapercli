@@ -104,6 +104,7 @@ jobs:
           else
               echo "Not running in GitHub Actions, skipping cleanup"
           fi
+
           echo "Using /mnt $(ls -la /mnt)"
           WORK_DIR="/mnt/dist"
           echo "WORK_DIR=$WORK_DIR" >> $GITHUB_ENV
@@ -137,8 +138,6 @@ jobs:
           done
           echo "Builds are located in ${WORK_DIR}:"
           ls -la ${WORK_DIR}
-          echo "Cleaning up work dir"
-          rm -r ${WORK_DIR}/*
           
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
