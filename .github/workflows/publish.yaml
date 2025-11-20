@@ -98,6 +98,11 @@ jobs:
             echo "Build $os/$arch"
             bin_path="${WORK_DIR}/landscapercli-$os-$arch"
 
+            echo "cd to project root: $PROJECT_ROOT"  
+            cd "$PROJECT_ROOT"
+
+            echo "contents of project root: $(ls -la $PROJECT_ROOT/cmd)"
+
             CGO_ENABLED=0 GOOS=$os GOARCH=$arch GO111MODULE=on \
             go build -o $bin_path \
             -ldflags "-s -w \
@@ -109,7 +114,6 @@ jobs:
             # create zipped file
             cd "${WORK_DIR}"
             gzip -f -k "$bin_path"
-            cd "$PROJECT_ROOT"
           done
 
       - name: Upload a Build Artifact
