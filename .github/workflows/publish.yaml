@@ -95,13 +95,13 @@ jobs:
           for i in "${build_matrix[@]}"; do
             IFS=',' read os arch <<< "${i}"
 
-            echo "Build $os/$arch"
+            echo "Build $os/$arch version ${{ env.version}}"
             bin_path="${WORK_DIR}/landscapercli-$os-$arch"
 
             echo "cd to project root: $PROJECT_ROOT"  
             cd "$PROJECT_ROOT"
 
-            echo "contents of project root: $(ls -la $PROJECT_ROOT/cmd)"
+            echo "contents of project root/cmd: $(ls -la $PROJECT_ROOT/cmd)"
 
             CGO_ENABLED=0 GOOS=$os GOARCH=$arch GO111MODULE=on \
             go build -o $bin_path \
@@ -109,7 +109,7 @@ jobs:
                       -X github.com/openmcp-project/landscapercli/pkg/version.LandscaperCliVersion=${{ env.version }} \
                       -X github.com/openmcp-project/landscapercli/pkg/version.gitTreeState=$([ -z git status --porcelain 2>/dev/null ] && echo clean || echo dirty) \
                       -X github.com/openmcp-project/landscapercli/pkg/version.gitCommit=$(git rev-parse --verify HEAD)" \
-            cmd/landscapercli
+            ${PROJECT_ROOT}/cmd/landscapercli
 
             # create zipped file
             cd "${WORK_DIR}"
