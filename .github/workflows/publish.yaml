@@ -113,7 +113,9 @@ jobs:
 
             # create zipped file
             cd "${WORK_DIR}"
-            gzip -f -k "$bin_path"
+            gzip -f "$bin_path"
+            # -f --force           force overwriting & compress links
+            # -k --keep            don't delete input files during operation
           done
 
       - name: Upload a Build Artifact
