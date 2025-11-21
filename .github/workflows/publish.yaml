@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  contents: write # we need this to be able to push tags
   packages: write
 
 env:
@@ -78,12 +79,7 @@ jobs:
       #   with:
       #     version: latest
 
-      - name: Set up Go
-        uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6
-        with:
-          go-version-file: go.mod
-
-      - name: Cross Build
+      - name: Cleanup ubuntu image to free up space
         run: |
           PROJECT_ROOT=$(pwd)
 
@@ -91,6 +87,7 @@ jobs:
               echo "Running in GitHub Actions, performing cleanup to free up space"
               # echo "=== disk-usage for /usr Level 2 ==="
               # sudo du -xh --exclude=/proc --max-depth=2 / | sort -hr
+              echo "free space: $(df -h . | tail -1 | awk '{print $4}')"
 
               echo "=== Deleting un-needed framework/tool dirs ==="
 
@@ -99,11 +96,21 @@ jobs:
               sudo rm -rf /usr/share/swift  || true # swift: ~3.2GB
               sudo rm -rf /usr/lib/jvm || true      # jvm: ~1.5GB
 
+              echo "free space after cleanup: $(df -h . | tail -1 | awk '{print $4}')"
               # echo "=== Github Workspace Usage for $GITHUB_WORKSPACE ==="
               # du -h --max-depth=1 "$GITHUB_WORKSPACE" | sort -hr
           else
               echo "Not running in GitHub Actions, skipping cleanup"
           fi
+
+      - name: Set up Go
+        uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6
+        with:
+          go-version-file: go.mod
+
+      - name: Cross Build
+        run: |
+          PROJECT_ROOT=$(pwd)
 
           echo "Using /mnt $(ls -la /mnt)"
           WORK_DIR="/mnt/dist"
@@ -140,6 +147,8 @@ jobs:
           done
           echo "Builds are located in ${WORK_DIR}:"
           ls -la ${WORK_DIR}
+          echo "work dir: ${WORK_DIR}, free space: $(df -h ${WORK_DIR} | tail -1 | awk '{print $4}')"
+
 
       # - name: Upload a Build Artifact
       #   uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
