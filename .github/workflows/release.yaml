@@ -30,6 +30,7 @@ jobs:
 
       - name: test-action
         run: cd hack/common; git status
+
       - name: Install Task
         uses: arduino/setup-task@v2
         with:

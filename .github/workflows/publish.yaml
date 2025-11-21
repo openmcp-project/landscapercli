@@ -10,6 +10,7 @@ on:
 permissions:
   contents: write # we need this to be able to push tags
   packages: write
+  pull-requests: read
 
 env:
   OCI_URL: ghcr.io/openmcp-project
@@ -58,7 +59,6 @@ jobs:
           echo "Skipping development version release: ${{ env.version }}"
           echo "SKIP=true" >> $GITHUB_ENV
           exit 0
-
 
       - name: Cleanup ubuntu image to free up space
         if: ${{ env.SKIP != 'true' }}
