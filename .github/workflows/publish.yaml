@@ -167,6 +167,7 @@ jobs:
           done
 
       - name: Build Changelog
+        if: ${{ env.SKIP != 'true' }}
         id: github_release
         run: task r:generate-changelog
         env:
