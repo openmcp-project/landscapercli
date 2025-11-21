@@ -133,7 +133,8 @@ jobs:
 
             # create zipped file
             cd "${WORK_DIR}"
-            gzip -f "$bin_path"
+            # using the upload action to zip it later
+            # gzip -f "$bin_path"
             # -f --force           force overwriting & compress links
             # -k --keep            don't delete input files during operation
           done
