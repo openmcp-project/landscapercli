@@ -8,8 +8,8 @@ require (
 	github.com/go-logr/zapr v1.3.0
 	github.com/golang/mock v1.7.0-rc.1
 	github.com/onsi/ginkgo v1.16.5
-	github.com/openmcp-project/landscaper v1.0.0
-	github.com/openmcp-project/landscaper/apis v1.0.0
+	github.com/openmcp-project/landscaper v1.0.2
+	github.com/openmcp-project/landscaper/apis v1.0.2
 	github.com/spf13/cobra v1.10.1
 	github.com/spf13/pflag v1.0.10
 	github.com/stretchr/testify v1.11.1
@@ -267,7 +267,7 @@ require (
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.1 // indirect
 	github.com/opencontainers/runtime-spec v1.2.1 // indirect
-	github.com/openmcp-project/landscaper/controller-utils v1.0.0 // indirect
+	github.com/openmcp-project/landscaper/controller-utils v1.0.2 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
