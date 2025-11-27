@@ -1,5 +1,5 @@
 /*
-SPDX-FileCopyrightText: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+SPDX-FileCopyrightText: 2025 SAP SE or an SAP affiliate company and openmcp-project contributors
 
 SPDX-License-Identifier: Apache-2.0
 */
@@ -75,10 +75,10 @@ SPDX-License-Identifier: Apache-2.0
         '';
 
         meta = with lib; {
-          description = "The landscaper-cli interacts with Gardener Landscaper";
+          description = "The landscaper-cli interacts with openmcp-project Landscaper";
           
           longDescription = ''
-            The landscape-cli supports users to develop, maintain, and test components processed by the [Gardener Landscaper](https://github.com/openmcp-project/landscaper).
+            The landscape-cli supports users to develop, maintain, and test components processed by the [openmcp-project Landscaper](https://github.com/openmcp-project/landscaper).
             This comprises the handling of objects like component descriptors, blueprints, installations, etc.
           '';
           homepage = "https://github.com/openmcp-project/landscapercli";

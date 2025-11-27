@@ -18,12 +18,12 @@ due to some fundamental API changes especially with respect to the handling of h
 ```bash
 # Nix (macOS, Linux, and Windows)
 # ad hoc cmd execution
-nix run github:gardener/landscapercli -- --help
+nix run github:openmcp-project/landscapercli -- --help
 
 # install development version
-nix profile install github:gardener/landscapercli
+nix profile install github:openmcp-project/landscapercli
 # or release <version>
-nix profile install github:gardener/landscapercli/<version>
+nix profile install github:openmcp-project/landscapercli/<version>
 
 #check installation
 nix profile list | grep landscapercli
