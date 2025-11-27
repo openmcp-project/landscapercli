@@ -103,7 +103,7 @@ jobs:
           sudo chmod 777 ${WORK_DIR}
           echo "work dir: ${WORK_DIR}, free space: $(df -h ${WORK_DIR} | tail -1 | awk '{print $4}')"
 
-          build_matrix=("linux,amd64" "linux,arm64" "darwin,amd64" "darwin,arm64" "windows,amd64")
+          build_matrix=("linux,amd64" "linux,arm64" "darwin,amd64" "darwin,arm64") # "windows,amd64"
 
           for i in "${build_matrix[@]}"; do
             IFS=',' read os arch <<< "${i}"
