@@ -115,15 +115,14 @@ jobs:
 
             CGO_ENABLED=0 GOOS=$os GOARCH=$arch GO111MODULE=on \
             go build -o $bin_path \
-            -ldflags "-s -w \
-                      -X github.com/openmcp-project/landscapercli/pkg/version.LandscaperCliVersion=${{ env.version }} \
-                      -X github.com/openmcp-project/landscapercli/pkg/version.gitTreeState=$([ -z git status --porcelain 2>/dev/null ] && echo clean || echo dirty) \
-                      -X github.com/openmcp-project/landscapercli/pkg/version.gitCommit=$(git rev-parse --verify HEAD)" \
-            ${PROJECT_ROOT}/cmd/landscapercli
+              -ldflags "-s -w \
+              -X github.com/openmcp-project/landscapercli/pkg/version.LandscaperCliVersion=${{ env.version }} \
+              -X github.com/openmcp-project/landscapercli/pkg/version.gitTreeState=$([ -z git status --porcelain 2>/dev/null ] && echo clean || echo dirty) \
+              -X github.com/openmcp-project/landscapercli/pkg/version.gitCommit=$(git rev-parse --verify HEAD)" \
+              ${PROJECT_ROOT}/cmd/landscapercli
 
             # create zipped file
             cd "${WORK_DIR}"
-            # using the upload action to zip it later
             gzip -f -k "$bin_path"
             # -f --force           force overwriting & compress links
             # -k --keep            don't delete input files during operation
@@ -131,7 +130,10 @@ jobs:
           echo "Builds are located in ${WORK_DIR}:"
           ls -la ${WORK_DIR}
           echo "work dir: ${WORK_DIR}, free space: $(df -h ${WORK_DIR} | tail -1 | awk '{print $4}')"
-
+          binfiles=$(ls dist/*.gz)
+          echo -e "Created binaries:\n$binfiles"
+          # using env variable BIN_BUILDS for the "Create GitHub release" later
+          echo "BIN_BUILDS=$binfiles" >> $GITHUB_ENV
 
       - name: Check if VERSION is already tagged
         id: check_tag
@@ -183,12 +185,7 @@ jobs:
           draft: true
           prerelease: false
           files: |
-            ${{ env.WORK_DIR }}/landscapercli-darwin-arm64.gz
-            ${{ env.WORK_DIR }}/landscapercli-linux,amd64.gz
-            ${{ env.WORK_DIR }}/landscapercli-linux,arm64.gz
-            ${{ env.WORK_DIR }}/landscapercli-darwin,amd64.gz
-            ${{ env.WORK_DIR }}/landscapercli-darwin-arm64.gz
-            ${{ env.WORK_DIR }}/landscapercli-windows-amd64.gz
+            ${{ env.BIN_BUILDS }} 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
