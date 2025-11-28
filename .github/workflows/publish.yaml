@@ -130,7 +130,7 @@ jobs:
           echo "Builds are located in ${WORK_DIR}:"
           ls -la ${WORK_DIR}
           echo "work dir: ${WORK_DIR}, free space: $(df -h ${WORK_DIR} | tail -1 | awk '{print $4}')"
-          binfiles=$(ls dist/*.gz)
+          binfiles=$(ls ${WORK_DIR}/*.gz)
           echo -e "Created binaries:\n$binfiles"
           # using env variable BIN_BUILDS for the "Create GitHub release" later
           echo "BIN_BUILDS=$binfiles" >> $GITHUB_ENV
