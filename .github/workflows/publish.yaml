@@ -132,9 +132,15 @@ jobs:
           echo "work dir: ${WORK_DIR}, free space: $(df -h ${WORK_DIR} | tail -1 | awk '{print $4}')"
           binfiles=$(ls ${WORK_DIR}/*.gz)
           echo -e "Created binaries:\n$binfiles"
-          # using env variable BIN_BUILDS for the "Create GitHub release" later
-          echo "BIN_BUILDS=$binfiles" >> $GITHUB_ENV
 
+          # using env variable BIN_BUILDS for the "Create GitHub release" later
+          # echo -e "BIN_BUILDS=$binfiles" >> $GITHUB_ENV
+          # It is important to note that directly using echo "VAR=value" >> $GITHUB_ENV with multiline content will not work as expected because the newline characters are interpreted as command separators, leading to truncation or parsing errors.
+          {
+            echo "BIN_BUILDS<<EOF"
+            echo "$binfiles"
+            echo "EOF"
+          } >> $GITHUB_ENV
       - name: Check if VERSION is already tagged
         id: check_tag
         run: |
