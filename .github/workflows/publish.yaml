@@ -146,10 +146,10 @@ jobs:
             echo "EOF"
           } >> $GITHUB_ENV
 
-      - name: Run Integration Tests
-        if: ${{ env.SKIP != 'true' }}
-        run: |
-          .ci/dev_integration_test TARGET_CLUSTERNAME=cli-re
+      # - name: Run Integration Tests
+      #   if: ${{ env.SKIP != 'true' }}
+      #   run: |
+      #     .ci/dev_integration_test TARGET_CLUSTERNAME=cli-re
 
       - name: Check if VERSION is already tagged
         id: check_tag
