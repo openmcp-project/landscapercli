@@ -146,10 +146,10 @@ jobs:
             echo "EOF"
           } >> $GITHUB_ENV
 
-      # - name: Run Integration Tests
-      #   if: ${{ env.SKIP != 'true' }}
-      #   run: |
-      #     .ci/dev_integration_test TARGET_CLUSTERNAME=cli-re
+      - name: Run Integration Tests
+        if: ${{ env.SKIP != 'true' }}
+        run: |
+          .ci/dev_integration_test TARGET_CLUSTERNAME=cli-re
 
       - name: Check if VERSION is already tagged
         id: check_tag
@@ -198,12 +198,12 @@ jobs:
           # git add docs && git commit -m "docs: update" || true
           echo "Docs generated."
 
-      # - name: Build Changelog
-      #   if: ${{ env.SKIP != 'true' }}
-      #   id: github_release
-      #   run: task r:generate-changelog
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Changelog
+        if: ${{ env.SKIP != 'true' }}
+        id: github_release
+        run: task r:generate-changelog
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub release
         if: ${{ env.SKIP != 'true' }}
