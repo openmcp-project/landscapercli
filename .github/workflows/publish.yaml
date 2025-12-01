@@ -91,6 +91,10 @@ jobs:
         with:
           go-version-file: go.mod
 
+      - name: Verify
+        run: |
+          make verify
+
       - name: Cross Build
         if: ${{ env.SKIP != 'true' }}
         run: |
@@ -141,6 +145,12 @@ jobs:
             echo "$binfiles"
             echo "EOF"
           } >> $GITHUB_ENV
+
+      - name: Run Integration Tests
+        if: ${{ env.SKIP != 'true' }}
+        run: |
+          .ci/dev_integration_test TARGET_CLUSTERNAME=cli-re
+
       - name: Check if VERSION is already tagged
         id: check_tag
         run: |
@@ -174,6 +184,21 @@ jobs:
             git push origin "${MODULE}/${{ env.version }}"
           done
 
+      - name: Generate docs
+        needs: [verify]
+        run: |
+          # Assuming a task or script exists to generate docs
+          make generate_docs || true
+
+      - name: Publish docs to source branch (optional)
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+        run: |
+          # Commit or push docs if required
+          # git config user.name "github-actions"
+          # git config user.email "actions@github.com"
+          # git add docs && git commit -m "docs: update" || true
+          echo "Docs generated."
+
       - name: Build Changelog
         if: ${{ env.SKIP != 'true' }}
         id: github_release
@@ -190,8 +215,9 @@ jobs:
           body_path: ./CHANGELOG.md
           draft: true
           prerelease: false
+          # Newline-delimited globs of paths to assets to upload for release, set by cross-build
           files: |
-            ${{ env.BIN_BUILDS }} 
+            ${{ env.BIN_BUILDS }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

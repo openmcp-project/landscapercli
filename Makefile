@@ -5,7 +5,7 @@
 REPO_ROOT         := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 EFFECTIVE_VERSION := $(shell $(REPO_ROOT)/hack/get-version.sh)
 
-CODE_DIRS := $(REPO_ROOT)/cmd/... $(REPO_ROOT)/pkg/... $(REPO_ROOT)/landscaper-cli/... $(REPO_ROOT)/integration-test/...
+CODE_DIRS := $(REPO_ROOT)/cmd/... $(REPO_ROOT)/pkg/... $(REPO_ROOT)/cmd/landscapercli/... $(REPO_ROOT)/integration-test/...
 
 
 ##@ General
