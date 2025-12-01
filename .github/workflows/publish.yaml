@@ -185,7 +185,6 @@ jobs:
           done
 
       - name: Generate docs
-        needs: [verify]
         run: |
           # Assuming a task or script exists to generate docs
           make generate_docs || true
