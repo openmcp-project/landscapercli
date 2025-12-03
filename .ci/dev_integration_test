@@ -4,19 +4,18 @@ PROJECT_ROOT="$(dirname $0)/.."
 LANDSCAPE="dev"
 TARGET_CLUSTER=""
 
-for i in "$@"
-do
-case $i in
-        -target-clustername=*|--target-clustername=*)
-        export TARGET_CLUSTER="${i#*=}"
-        shift
-    ;;
-    *)
-        # unknown option
-        echo "Unknown option ${i#*=}"
-        exit 1
-    ;;
-esac
+# Accept parameters passed as KEY=VALUE (e.g. TARGET_CLUSTERNAME=foo) or parameters
+for arg in "$@"; do
+    case "$arg" in
+        TARGET_CLUSTERNAME=*|-target-clustername=*|--target-clustername=*)
+            export TARGET_CLUSTER="${arg#*=}"
+            ;;
+        *)
+            # unknown option
+            echo "Unknown option ${i#*=}"
+            exit 1
+        ;;
+    esac
 done
 
 if [[ $TARGET_CLUSTER == "" ]]; then
