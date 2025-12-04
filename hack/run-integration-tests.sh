@@ -68,8 +68,8 @@ fi
 echo "Running apk add py3-pip3"
 pip3 install --upgrade pip --break-system-packages
 
-echo "Running apk add py3-gardener-cicd-libs"
-pip3 install gardener-cicd-libs --break-system-packages
+# echo "Running apk add py3-gardener-cicd-libs"
+# pip3 install gardener-cicd-libs --break-system-packages
 
-echo "Running starting .../.ci/integration_test.py"
-${PROJECT_ROOT}/.ci/integration_test.py
+echo "Running starting .../hack/run-integration-tests.py"
+${PROJECT_ROOT}/hack/run-integration-tests.py

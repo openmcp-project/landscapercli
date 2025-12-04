@@ -6,6 +6,12 @@ on:
     tags:
       - v*
   workflow_dispatch:
+    inputs:
+      garden_kube_config:
+        description: "Please enter the kubeconfig.yaml content for the cluster where the integration tests should be run."
+        required: true
+        type: string
+        default: ""
 
 permissions:
   contents: write # we need this to be able to push tags
@@ -18,6 +24,8 @@ env:
 jobs:
   release_tag:
     name: Release version
+    env:
+      GARDEN_KUBE_CONFIG: ${{ github.event.inputs.garden_kube_config }}
     runs-on: ubuntu-latest
     steps:
       - name: Create GitHub App token
@@ -149,7 +157,9 @@ jobs:
       - name: Run Integration Tests
         if: ${{ env.SKIP != 'true' }}
         run: |
-          .ci/dev_integration_test TARGET_CLUSTERNAME=cli-re
+          echo "Running integration tests against dev cluster..."
+          # echo "DISABLED!"
+          hack/run-integration-tests.sh TARGET_CLUSTERNAME=cli-re
 
       - name: Check if VERSION is already tagged
         id: check_tag
