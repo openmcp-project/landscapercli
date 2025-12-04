@@ -11,7 +11,7 @@ from subprocess import PIPE, STDOUT, Popen, run
 import helm
 import utils
 import yaml
-from ci.util import ctx
+# from ci.util import ctx
 
 print("Starting integration test")
 print(f"INFO current environment: {os.environ}")

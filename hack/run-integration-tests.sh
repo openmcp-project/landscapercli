@@ -1,7 +1,6 @@
 #!/bin/sh
 
 PROJECT_ROOT="$(dirname $0)/.."
-LANDSCAPE="dev"
 TARGET_CLUSTER=""
 
 # Accept parameters passed as KEY=VALUE (e.g. TARGET_CLUSTERNAME=foo) or parameters
