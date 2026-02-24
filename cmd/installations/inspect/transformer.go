@@ -73,12 +73,12 @@ func (t *Transformer) transformInstallation(installationTree *InstallationTree, 
 		if installationTree.Installation.Spec.ComponentDescriptor != nil && installationTree.Installation.Spec.ComponentDescriptor.Reference != nil {
 			cd = fmt.Sprintf("%s:%s", installationTree.Installation.Spec.ComponentDescriptor.Reference.ComponentName, installationTree.Installation.Spec.ComponentDescriptor.Reference.Version)
 		}
-		wide.WriteString(fmt.Sprintf("Component Descriptor: %s\n", cd))
+		fmt.Fprintf(&wide, "Component Descriptor: %s\n", cd)
 		bp := "inline"
 		if installationTree.Installation.Spec.Blueprint.Reference != nil {
 			bp = installationTree.Installation.Spec.Blueprint.Reference.ResourceName
 		}
-		wide.WriteString(fmt.Sprintf("Blueprint: %s", bp))
+		fmt.Fprintf(&wide, "Blueprint: %s", bp)
 		printableNode.WideData = wide.String()
 	}
 
@@ -167,7 +167,7 @@ func (t *Transformer) transformDeployItem(deployItem *DeployItemLeaf, check *out
 	if t.wideMode {
 		wide := strings.Builder{}
 		diType := deployItem.DeployItem.Spec.Type
-		wide.WriteString(fmt.Sprintf("Type: %s", diType))
+		fmt.Fprintf(&wide, "Type: %s", diType)
 		switch diType {
 		case "landscaper.gardener.cloud/helm":
 			// print helm chart location
@@ -212,13 +212,13 @@ func (t *Transformer) transformDeployItem(deployItem *DeployItemLeaf, check *out
 				if len(config.Command) != 0 {
 					wide.WriteString("\nCommand:")
 					for _, e := range config.Command {
-						wide.WriteString(fmt.Sprintf(" %q", e))
+						fmt.Fprintf(&wide, " %q", e)
 					}
 				}
 				if len(config.Args) != 0 {
 					wide.WriteString("\nArgs:")
 					for _, e := range config.Args {
-						wide.WriteString(fmt.Sprintf(" %q", e))
+						fmt.Fprintf(&wide, " %q", e)
 					}
 				}
 			}
