@@ -14,7 +14,7 @@
     "config:recommended",
     "config:best-practices",
     "docker:pinDigests",
-    "group:kubernetes",
+    "group:kubernetesMonorepo",
     "group:goOpenapi",
     "security:openssf-scorecard",
     "default:automergeDigest",
