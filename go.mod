@@ -8,8 +8,8 @@ require (
 	github.com/go-logr/zapr v1.3.0
 	github.com/golang/mock v1.7.0-rc.1
 	github.com/onsi/ginkgo/v2 v2.28.1
-	github.com/openmcp-project/landscaper v1.1.0
-	github.com/openmcp-project/landscaper/apis v1.1.0
+	github.com/openmcp-project/landscaper v1.2.0
+	github.com/openmcp-project/landscaper/apis v1.2.0
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
 	github.com/stretchr/testify v1.11.1
@@ -107,11 +107,11 @@ require (
 	github.com/cloudflare/cfssl v1.6.5 // indirect
 	github.com/cloudflare/circl v1.6.3 // indirect
 	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be // indirect
-	github.com/containerd/containerd v1.7.30 // indirect
+	github.com/containerd/containerd v1.7.31 // indirect
 	github.com/containerd/errdefs v1.0.0 // indirect
 	github.com/containerd/errdefs/pkg v0.3.0 // indirect
 	github.com/containerd/log v0.1.0 // indirect
-	github.com/containerd/platforms v0.2.1 // indirect
+	github.com/containerd/platforms v1.0.0-rc.2 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.18.2 // indirect
 	github.com/containers/image/v5 v5.36.2 // indirect
 	github.com/containers/libtrust v0.0.0-20230121012942-c1716e8a8d01 // indirect
@@ -127,8 +127,7 @@ require (
 	github.com/digitorus/timestamp v0.0.0-20250524132541-c45532741eea // indirect
 	github.com/dimchansky/utfbom v1.1.1 // indirect
 	github.com/distribution/reference v0.6.0 // indirect
-	github.com/docker/cli v29.3.0+incompatible // indirect
-	github.com/docker/distribution v2.8.3+incompatible // indirect
+	github.com/docker/cli v29.4.0+incompatible // indirect
 	github.com/docker/docker v28.5.2+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.9.4 // indirect
 	github.com/docker/go-connections v0.6.0 // indirect
@@ -190,7 +189,7 @@ require (
 	github.com/google/certificate-transparency-go v1.3.2 // indirect
 	github.com/google/gnostic-models v0.7.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
-	github.com/google/go-containerregistry v0.21.3 // indirect
+	github.com/google/go-containerregistry v0.21.5 // indirect
 	github.com/google/go-github/v45 v45.2.0 // indirect
 	github.com/google/go-github/v73 v73.0.0 // indirect
 	github.com/google/go-querystring v1.2.0 // indirect
@@ -217,7 +216,7 @@ require (
 	github.com/jinzhu/copier v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kevinburke/ssh_config v1.4.0 // indirect
-	github.com/klauspost/compress v1.18.4 // indirect
+	github.com/klauspost/compress v1.18.5 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
 	github.com/klauspost/pgzip v1.2.6 // indirect
 	github.com/letsencrypt/boulder v0.20251110.0 // indirect
@@ -225,7 +224,7 @@ require (
 	github.com/lufia/plan9stats v0.0.0-20250317134145-8bc96cf8fc35 // indirect
 	github.com/magiconair/properties v1.8.10 // indirect
 	github.com/mandelsoft/filepath v0.0.0-20240223090642-3e2777258aa3 // indirect
-	github.com/mandelsoft/goutils v0.0.0-20260306190640-f824bcfda3b1 // indirect
+	github.com/mandelsoft/goutils v0.0.0-20260414123113-d90bf06bf110 // indirect
 	github.com/mandelsoft/logging v0.0.0-20240618075559-fdca28a87b0a // indirect
 	github.com/mandelsoft/vfs v0.4.5-0.20250514111339-d7b067920e91 // indirect
 	github.com/marstr/guid v1.1.0 // indirect
@@ -240,8 +239,8 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/moby/docker-image-spec v1.3.1 // indirect
 	github.com/moby/locker v1.0.1 // indirect
-	github.com/moby/moby/api v1.54.0 // indirect
-	github.com/moby/moby/client v0.3.0 // indirect
+	github.com/moby/moby/api v1.54.1 // indirect
+	github.com/moby/moby/client v0.4.0 // indirect
 	github.com/moby/sys/atomicwriter v0.1.0 // indirect
 	github.com/moby/sys/capability v0.4.0 // indirect
 	github.com/moby/sys/mountinfo v0.7.2 // indirect
@@ -260,8 +259,8 @@ require (
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.1 // indirect
 	github.com/opencontainers/runtime-spec v1.3.0 // indirect
-	github.com/openmcp-project/landscaper/controller-utils v1.1.0 // indirect
-	github.com/openmcp-project/landscaper/legacy-component-spec/bindings-go v1.1.0 // indirect
+	github.com/openmcp-project/landscaper/controller-utils v1.2.0 // indirect
+	github.com/openmcp-project/landscaper/legacy-component-spec/bindings-go v1.2.0 // indirect
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
@@ -284,7 +283,7 @@ require (
 	github.com/secure-systems-lab/go-securesystemslib v0.10.0 // indirect
 	github.com/sergi/go-diff v1.4.0 // indirect
 	github.com/shibumi/go-pathspec v1.3.0 // indirect
-	github.com/shirou/gopsutil/v4 v4.26.2 // indirect
+	github.com/shirou/gopsutil/v4 v4.26.3 // indirect
 	github.com/sigstore/cosign/v3 v3.0.4 // indirect
 	github.com/sigstore/fulcio v1.8.5 // indirect
 	github.com/sigstore/protobuf-specs v0.5.0 // indirect
@@ -340,16 +339,16 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.3 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/crypto v0.49.0 // indirect
-	golang.org/x/mod v0.34.0 // indirect
-	golang.org/x/net v0.52.0 // indirect
+	golang.org/x/crypto v0.50.0 // indirect
+	golang.org/x/mod v0.35.0 // indirect
+	golang.org/x/net v0.53.0 // indirect
 	golang.org/x/oauth2 v0.36.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
-	golang.org/x/sys v0.42.0 // indirect
-	golang.org/x/term v0.41.0 // indirect
-	golang.org/x/text v0.35.0 // indirect
+	golang.org/x/sys v0.43.0 // indirect
+	golang.org/x/term v0.42.0 // indirect
+	golang.org/x/text v0.36.0 // indirect
 	golang.org/x/time v0.14.0 // indirect
-	golang.org/x/tools v0.43.0 // indirect
+	golang.org/x/tools v0.44.0 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.4.0 // indirect
 	google.golang.org/api v0.260.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20251222181119-0a764e51fe1b // indirect
@@ -362,13 +361,13 @@ require (
 	gopkg.in/op/go-logging.v1 v1.0.0-20160211212156-b2cb9fa56473 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	helm.sh/helm/v3 v3.20.1 // indirect
+	helm.sh/helm/v3 v3.20.2 // indirect
 	k8s.io/cli-runtime v0.35.1 // indirect
 	k8s.io/component-base v0.35.4 // indirect
 	k8s.io/gengo v0.0.0-20240310015720-9cff6334dab4 // indirect
 	k8s.io/klog v1.0.0 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
-	k8s.io/kube-openapi v0.0.0-20260319004828-5883c5ee87b9 // indirect
+	k8s.io/kube-openapi v0.0.0-20260414162039-ec9c827d403f // indirect
 	k8s.io/kubectl v0.35.1 // indirect
 	ocm.software/ocm v0.36.0 // indirect
 	oras.land/oras-go/v2 v2.6.0 // indirect
