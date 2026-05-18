@@ -7,7 +7,7 @@ require (
 	github.com/go-logr/logr v1.4.3
 	github.com/go-logr/zapr v1.3.0
 	github.com/golang/mock v1.7.0-rc.1
-	github.com/onsi/ginkgo/v2 v2.28.3
+	github.com/onsi/ginkgo/v2 v2.29.0
 	github.com/openmcp-project/landscaper v1.2.0
 	github.com/openmcp-project/landscaper/apis v1.2.0
 	github.com/spf13/cobra v1.10.2
