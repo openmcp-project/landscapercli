@@ -27,7 +27,7 @@ require (
 
 exclude github.com/imdario/mergo v1.0.0
 
-replace github.com/ThalesIgnite/crypto11 => github.com/ThalesGroup/crypto11 v1.6.1
+replace github.com/ThalesIgnite/crypto11 => github.com/ThalesGroup/crypto11 v1.6.2
 
 require (
 	cloud.google.com/go/auth v0.18.2 // indirect
