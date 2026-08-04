@@ -6,12 +6,6 @@ on:
     tags:
       - v*
   workflow_dispatch:
-    inputs:
-      garden_kube_config:
-        description: "Please enter the kubeconfig.yaml content for the cluster where the integration tests should be run."
-        required: true
-        type: string
-        default: ""
 
 permissions:
   contents: write # we need this to be able to push tags
