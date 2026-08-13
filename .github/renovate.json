@@ -1,26 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "github>openmcp-project/.github:renovate-config",
-    "docker:pinDigests",
-    "group:kubernetesMonorepo",
-    "group:goOpenapi",
-    "default:automergeDigest",
-    ":dependencyDashboard"
+    "github>openmcp-project/.github:renovate-config"
   ],
-  "git-submodules": {
-    "enabled": true
-  },
-  "stopUpdatingLabel": "take-a-break-renovate",
-  "schedule": [
-    "after 07:30am",
-    "before 07:15pm",
-    "every weekday"
-  ],
-  "prHourlyLimit": 1,
-  "prConcurrentLimit": 0,
-  "minimumReleaseAge": "0 days",
-  "timezone": "Europe/Berlin",
   "packageRules": [
     {
       "description": "Update golang version in pipelines",
@@ -42,8 +24,7 @@
       "description": "Create landscaper updates immediately",
       "groupName": "landscaper group",
       "groupSlug": "landscaper",
-      "minimumReleaseAge": "0 days",
-      "enabled": true,
+          "enabled": true,
       "matchPackageNames": [
         "github.com/openmcp-project/landscaper{/,}**"
       ],
