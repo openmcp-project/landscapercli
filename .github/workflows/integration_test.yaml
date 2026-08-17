@@ -1,0 +1,51 @@
+name: Integration Test
+on:
+  workflow_dispatch:
+    inputs:
+      garden_kube_config:
+        description: "Please enter the kubeconfig.yaml content for the cluster where the integration tests should be run."
+        required: true
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest-8core
+    if: |
+      github.actor == 'renovate[bot]' ||
+      github.actor == 'dependabot[bot]' ||
+      contains(github.event.pull_request.title, 'run-int-tests') ||
+      contains(github.event.head_commit.message, 'run-int-tests') ||
+      contains(github.event_name , 'workflow_dispatch')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6
+        with:
+          submodules: recursive
+
+      - name: Set up Go
+        uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6
+        with:
+          go-version-file: go.mod
+
+      # make revendor task now uses 'task generate:tidy' to run 'go mod tidy' for all modules
+      # this is also called in make check|verify
+      - name: Run 'go mod tidy' for all modules (fkamake revendor)
+        run: task generate:tidy
+
+      - name: Build and Push Images
+        run: make docker-images
+
+      - name: Build and Push OCM Component
+        run: make component
+
+      - name: run integration test
+        env:
+          PULL_REQUEST_ID: ${{ github.event.pull_request.number }}
+        run: |
+          VERSION="$('./hack/get-version.sh')"
+          echo "DISABLED! Running integration tests for PR: $PULL_REQUEST_ID"
