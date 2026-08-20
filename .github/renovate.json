@@ -27,8 +27,7 @@
           "enabled": true,
       "matchPackageNames": [
         "github.com/openmcp-project/landscaper{/,}**"
-      ],
-      "rebaseWhen": "auto"
+      ]
     },
     {
       "description": "Combine all patch updates in GO in a single PR",
@@ -43,8 +42,7 @@
       "matchUpdateTypes": [
         "patch",
         "digest"
-      ],
-      "rebaseWhen": "auto"
+      ]
     },
     {
       "matchUpdateTypes": [
@@ -52,8 +50,7 @@
         "patch",
         "pin",
         "digest"
-      ],
-      "rebaseWhen": "auto"
+      ]
     }
   ],
   "customManagers": [
