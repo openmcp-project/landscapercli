@@ -1,6 +1,6 @@
 module github.com/openmcp-project/landscapercli
 
-go 1.26.6
+go 1.27.0
 
 require (
 	github.com/ahmetb/gen-crd-api-reference-docs v0.3.0
