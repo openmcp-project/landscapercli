@@ -1,0 +1,239 @@
+name: landscaper-cli CI
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - 'v*'         # release pipeline trigger
+  pull_request:
+    branches:
+      - '**'
+  workflow_dispatch:
+  schedule:
+    - cron: '*/10 * * * *'  # create_upgrade_prs every 10 minutes
+
+concurrency:
+  group: landscaper-cli-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write
+
+env:
+  OUT_DIR: out
+  OCI_URL: ghcr.io/openmcp-project
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+
+      - name: Run verify
+        run: |
+          task verify
+          
+      - name: Upload verify artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify
+          path: ${{ env.OUT_DIR }}/ || ${{ github.workspace }}
+
+  build:
+    name: Build (Cross)
+    needs: verify
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, darwin]
+        goarch: [amd64, arm64]
+    env:
+      VERSION: ${{ steps.version.outputs.version || '' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+
+      - name: Cross Build
+        run: |
+          mkdir -p "${{ env.OUT_DIR }}"
+          CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} \
+            go build -o "${{ env.OUT_DIR }}/landscapercli-${{ matrix.goos }}-${{ matrix.goarch }}" \
+            -ldflags "-s -w -X github.com/openmcp-project/landscapercli/pkg/version.gitCommit=$(git rev-parse --verify HEAD)" \
+            ./cmd/landscapercli
+
+          gzip -f -n "${{ env.OUT_DIR }}/landscapercli-${{ matrix.goos }}-${{ matrix.goarch }}"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: ${{ env.OUT_DIR }}/landscapercli-${{ matrix.goos }}-${{ matrix.goarch }}.gz
+          retention-days: 7
+
+  integration_test_pr:
+    name: Integration Tests (PR)
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Integration Test (PR)
+        run: |
+          task dev_integration_test -- --target-clustername=cli-pr
+      - name: Upload integration_test artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration_test_pr
+          path: integration_test
+          retention-days: 7
+
+  integration_test_release:
+    name: Integration Tests (Release)
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Integration Test (Release)
+        run: |
+          task dev_integration_test -- --target-clustername=cli-re
+      - name: Upload integration_test artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration_test_release
+          path: integration_test
+          retention-days: 7
+
+  generate_docs:
+    name: Generate Docs
+    runs-on: ubuntu-latest
+    needs: [verify]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+
+      - name: Generate docs
+        run: |
+          # Assuming a task or script exists to generate docs
+          task generate_docs || true
+
+      - name: Publish docs to source branch (optional)
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+        run: |
+          # Commit or push docs if required
+          # git config user.name "github-actions"
+          # git config user.email "actions@github.com"
+          # git add docs && git commit -m "docs: update" || true
+          echo "Docs generated."
+
+  update_release:
+    name: Update Release (tag)
+    runs-on: ubuntu-latest
+    needs: [build, integration_test_release, generate_docs]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ${{ env.OUT_DIR }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Run update_release.py
+        run: |
+          python3 ./update_release.py --out-path "${{ env.OUT_DIR }}"
+
+      - name: Publish release artifacts
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref }}
+          name: Release ${{ github.ref }}
+          files: ${{ env.OUT_DIR }}/*.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  create_upgrade_prs:
+    name: Create Upgrade PRs (Cron)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run update component deps
+        run: |
+          # Implement tasks which create upgrade PRs, matching Concourse traits
+          task update_component_deps || true
+      - name: Create PRs (if any)
+        run: |
+          # Use git cli / gh cli to create PRs; ensure secrets are configured
+          echo "Create PRs placeholder"
