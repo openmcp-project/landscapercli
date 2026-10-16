@@ -11,3 +11,45 @@ includes:
       REPO_URL: 'https://github.com/openmcp-project/landscapercli'
       GENERATE_DOCS_INDEX: "false"
       CHART_COMPONENTS: "[]"
+
+# Makefile target mapping:
+#   help            -> 'help' task (shared)
+#   revendor        -> 'generate:tidy' task (shared, also called by 'generate')
+#   format          -> 'generate:format' task (shared, also called by 'generate')
+#   check / verify  -> 'validate' / 'verify' / 'check' tasks (shared)
+#   test            -> 'test' task (shared)
+#   cross-build     -> 'build' task (shared: build:bin:all, multi-platform linux+darwin x amd64+arm64)
+#   component       -> 'ocm' task (shared: build:ocm:all, builds and pushes OCM component)
+#   component-build -> 'build:ocm:build' task (shared)
+#   component-push  -> 'build:ocm:push' task (shared)
+#   localbin        -> 'tools:localbin' internal task (shared)
+#   goimports       -> 'tools:goimports' internal task (shared)
+#   golangci-lint   -> 'tools:golangci-lint' internal task (shared)
+#   ocm (tool)      -> 'tools:ocm' internal task (shared)
+
+tasks:
+
+  # Makefile 'generate': generates command reference documentation.
+  # The shared 'generate' task covers tidy/format/code-gen but skips command-reference
+  # because Taskfile_controller.yaml does not set IS_CLI=true (only Taskfile_cli.yaml does).
+  generate-docs:
+    desc: "  Generate the command reference documentation."
+    aliases:
+    - cmdref
+    cmds:
+    - 'go run "{{.ROOT_DIR}}/hack/generate-docs/main.go" "{{.ROOT_DIR}}/docs/reference"'
+
+  # Makefile 'install' / 'install-cli': installs the CLI tool.
+  # Not available in Taskfile_controller.yaml (only in Taskfile_cli.yaml).
+  # Uses pkg/version (not internal/version) for version ldflags.
+  install:
+    desc: "  Install the landscapercli CLI tool."
+    aliases:
+    - install-cli
+    cmds:
+    - |
+      CGO_ENABLED=0 go install \
+        -ldflags "-X github.com/openmcp-project/landscapercli/pkg/version.LandscaperCliVersion={{.VERSION}} \
+                  -X github.com/openmcp-project/landscapercli/pkg/version.gitTreeState={{.GIT_TREE_STATE}} \
+                  -X github.com/openmcp-project/landscapercli/pkg/version.gitCommit={{.GIT_COMMIT}}" \
+        {{.ROOT_DIR}}/cmd/landscapercli
