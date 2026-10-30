@@ -9,7 +9,7 @@ require (
 	github.com/golang/mock v1.7.0-rc.1
 	github.com/onsi/ginkgo/v2 v2.33.1
 	github.com/openmcp-project/landscaper v1.4.2
-	github.com/openmcp-project/landscaper/apis v1.4.2
+	github.com/openmcp-project/landscaper/apis v1.4.3
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
 	github.com/stretchr/testify v1.12.1
@@ -250,8 +250,8 @@ require (
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.1 // indirect
 	github.com/opencontainers/runtime-spec v1.3.0 // indirect
-	github.com/openmcp-project/landscaper/controller-utils v1.4.2 // indirect
-	github.com/openmcp-project/landscaper/legacy-component-spec/bindings-go v1.4.2 // indirect
+	github.com/openmcp-project/landscaper/controller-utils v1.4.3 // indirect
+	github.com/openmcp-project/landscaper/legacy-component-spec/bindings-go v1.4.3 // indirect
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.4.3 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
