@@ -1,0 +1,234 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Reusable workflow — called by every component repository.
+# TODO: fter test in this repo, move to build
+# Determines the conventional-commit-based release bump since the last tag,
+# runs the appropriate `task release:{type}` command, and opens a release PR.
+# ─────────────────────────────────────────────────────────────────────────────
+name: Create Release PR (reusable)
+
+on:
+  workflow_call:
+
+jobs:
+  release-pr:
+    name: Determine and open release PR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write        # push release branch
+      pull-requests: write   # open PR
+
+    steps:
+      # ── 1. Checkout with full history and submodules ─────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0         # needed for tag comparison
+          submodules: recursive  # pulls in hack/common so `task` works
+
+      # ── 2. Find the last semver release tag ──────────────────────────────
+      - name: Get latest release tag
+        id: last-tag
+        run: |
+          TAG=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -1)
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          if [ -z "$TAG" ]; then
+            echo "No prior release tag found — full history will be analysed."
+          else
+            echo "Latest release tag: ${TAG}"
+          fi
+
+      # ── 3. Abort early if nothing changed since the last release ─────────
+      - name: Check for new commits
+        id: changes
+        run: |
+          TAG="${{ steps.last-tag.outputs.tag }}"
+          if [ -n "$TAG" ]; then
+            COUNT=$(git log "${TAG}..HEAD" --oneline | wc -l | tr -d ' ')
+            RANGE="${TAG}..HEAD"
+          else
+            COUNT=$(git log --oneline | wc -l | tr -d ' ')
+            RANGE=""
+          fi
+
+          if [ "$COUNT" -eq 0 ]; then
+            echo "::warning::No commits found since the last release (${TAG}). Nothing to release."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=true"  >> "$GITHUB_OUTPUT"
+            echo "range=${RANGE}" >> "$GITHUB_OUTPUT"
+            echo "Found ${COUNT} commit(s) since ${TAG:-the beginning}."
+          fi
+
+      # ── 4. Analyse conventional commit messages ──────────────────────────
+      #
+      #   MAJOR  → any commit with "!" suffix  (feat!:, fix!: …)
+      #            or "BREAKING CHANGE:" in the commit body/footer
+      #   MINOR  → feat:
+      #   PATCH  → fix:  chore(deps):  refactor:  perf:  test:
+      #   SKIP   → build:  chore:  ci:  docs:  style:  (and anything else)
+      #
+      - name: Analyse commits (conventional commits)
+        id: cc
+        if: steps.changes.outputs.found == 'true'
+        shell: bash
+        run: |
+          RANGE="${{ steps.changes.outputs.range }}"
+
+          if [ -n "$RANGE" ]; then
+            SUBJECTS=$(git log "$RANGE" --pretty=format:'%s')
+            BODIES=$(git log "$RANGE" --pretty=format:'%b')
+          else
+            SUBJECTS=$(git log --pretty=format:'%s')
+            BODIES=$(git log --pretty=format:'%b')
+          fi
+
+          RELEASE="none"
+          SKIP_LIST=""
+
+          while IFS= read -r msg; do
+            [[ -z "$msg" ]] && continue
+
+            if [[ "$msg" =~ ^[a-zA-Z]+(\(.+\))?!: ]]; then
+              # Exclamation-mark breaking change — always MAJOR
+              RELEASE="major"
+
+            elif [[ "$msg" =~ ^feat(\(.+\))?: ]]; then
+              [[ "$RELEASE" != "major" ]] && RELEASE="minor"
+
+            elif [[ "$msg" =~ ^(fix|refactor|perf|test)(\(.+\))?: ]] || \
+                 [[ "$msg" =~ ^chore\(deps\): ]]; then
+              [[ "$RELEASE" == "none" ]] && RELEASE="patch"
+
+            elif [[ "$msg" =~ ^(build|chore|ci|docs|style)(\(.+\))?: ]]; then
+              SKIP_LIST+=$'\n'"  - ${msg}"
+
+            else
+              # Non-conventional or unknown prefix — treated as no-release
+              SKIP_LIST+=$'\n'"  - ${msg}  ⚠ (no recognized conventional prefix)"
+            fi
+          done <<< "$SUBJECTS"
+
+          # Commit-body "BREAKING CHANGE:" footer token → MAJOR
+          if echo "$BODIES" | grep -qE '^BREAKING CHANGE:'; then
+            RELEASE="major"
+          fi
+
+          echo "release_type=${RELEASE}" >> "$GITHUB_OUTPUT"
+
+          # Multiline output (heredoc form required by GitHub Actions)
+          DELIM="CC_SKIP_$(openssl rand -hex 6)"
+          {
+            echo "skip_list<<${DELIM}"
+            echo "${SKIP_LIST}"
+            echo "${DELIM}"
+          } >> "$GITHUB_OUTPUT"
+
+          echo "Determined release type: ${RELEASE}"
+
+      # ── 5. Warn and exit when no release-worthy commits were found ────────
+      - name: Warn — only non-release commits present
+        if: steps.changes.outputs.found == 'true' && steps.cc.outputs.release_type == 'none'
+        run: |
+          echo "::warning::No release-worthy conventional commits found since the last release."
+          echo "The following commits were analysed but do not trigger a release:"
+          echo "${{ steps.cc.outputs.skip_list }}"
+
+      # ── 6. Guard against a pre-existing open release PR ──────────────────
+      - name: Check for existing open release PR
+        id: existing-pr
+        if: steps.changes.outputs.found == 'true' && steps.cc.outputs.release_type != 'none'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          OPEN=$(gh pr list \
+            --state open \
+            --json number,headRefName \
+            --jq '[.[] | select(.headRefName | startswith("release/"))][0].number // ""')
+
+          if [ -n "$OPEN" ]; then
+            echo "::warning::An open release PR (#${OPEN}) already exists. Skipping."
+            echo "exists=true"  >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ── 7. Install the Task CLI (taskfile.dev) ────────────────────────────
+      - name: Install Task CLI
+        if: >-
+          steps.changes.outputs.found == 'true' &&
+          steps.cc.outputs.release_type != 'none' &&
+          steps.existing-pr.outputs.exists == 'false'
+        run: |
+          sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
+          task --version
+
+      # ── 8. Bump the version by running the appropriate task ───────────────
+      - name: Run task release
+        id: run-task
+        if: >-
+          steps.changes.outputs.found == 'true' &&
+          steps.cc.outputs.release_type != 'none' &&
+          steps.existing-pr.outputs.exists == 'false'
+        run: |
+          TYPE="${{ steps.cc.outputs.release_type }}"
+          echo "Executing: task release:${TYPE}"
+          task release:${TYPE}
+
+      # ── 9. Read the bumped version from the VERSION file ─────────────────
+      - name: Read new version
+        id: version
+        if: >-
+          steps.changes.outputs.found == 'true' &&
+          steps.cc.outputs.release_type != 'none' &&
+          steps.existing-pr.outputs.exists == 'false'
+        run: |
+          VER=$(tr -d '[:space:]' < VERSION)
+          [ -z "$VER" ] && { echo "::error::VERSION file is empty after task run."; exit 1; }
+          echo "version=${VER}" >> "$GITHUB_OUTPUT"
+          echo "New version: ${VER}"
+
+      # ── 10. Commit changed files, push branch, open PR ───────────────────
+      - name: Create release branch and open PR
+        if: >-
+          steps.changes.outputs.found == 'true' &&
+          steps.cc.outputs.release_type != 'none' &&
+          steps.existing-pr.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VER="${{ steps.version.outputs.version }}"
+          TYPE="${{ steps.cc.outputs.release_type }}"
+          BRANCH="release/v${VER}"
+          DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git checkout -b "$BRANCH"
+          git add --all
+
+          # Abort if the task produced no file changes
+          if git diff --cached --quiet; then
+            echo "::error::task release:${TYPE} ran but produced no file changes."
+            exit 1
+          fi
+
+          git commit -m "chore: release v${VER}"
+          git push origin "$BRANCH"
+
+          gh pr create \
+            --title "chore: release v${VER}" \
+            --body  "## Release \`v${VER}\`
+
+          This PR was opened automatically by the release workflow.
+
+          | | |
+          |---|---|
+          | **Version** | \`v${VER}\` |
+          | **Release type** | \`${TYPE}\` |
+          | **Triggered by** | \`${{ github.event_name }}\` |
+          | **Commits analysed** | since \`${{ steps.last-tag.outputs.tag }}\` |
+
+          Merging this PR will publish the component." \
+            --base "$DEFAULT_BRANCH" \
+            --head "$BRANCH"
