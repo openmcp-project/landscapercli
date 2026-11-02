@@ -163,6 +163,16 @@ jobs:
           sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
           task --version
 
+      # ── 7b. Configure git identity before task release commits ───────────
+      - name: Configure git identity
+        if: >-
+          steps.changes.outputs.found == 'true' &&
+          steps.cc.outputs.release_type != 'none' &&
+          steps.existing-pr.outputs.exists == 'false'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       # ── 8. Bump the version by running the appropriate task ───────────────
       - name: Run task release
         id: run-task
@@ -188,7 +198,8 @@ jobs:
           echo "version=${VER}" >> "$GITHUB_OUTPUT"
           echo "New version: ${VER}"
 
-      # ── 10. Commit changed files, push branch, open PR ───────────────────
+      # ── 10. Push release branch and open PR ──────────────────────────────
+      #   task release already committed all changes; we just branch and push.
       - name: Create release branch and open PR
         if: >-
           steps.changes.outputs.found == 'true' &&
@@ -202,19 +213,14 @@ jobs:
           BRANCH="release/v${VER}"
           DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)
 
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git checkout -b "$BRANCH"
-          git add --all
-
-          # Abort if the task produced no file changes
-          if git diff --cached --quiet; then
-            echo "::error::task release:${TYPE} ran but produced no file changes."
+          # Verify that task release actually produced a release commit
+          LAST_MSG=$(git log -1 --pretty=format:'%s')
+          if ! echo "$LAST_MSG" | grep -qE "release"; then
+            echo "::error::Expected a release commit from task release:${TYPE}, but last commit is: ${LAST_MSG}"
             exit 1
           fi
 
-          git commit -m "chore: release v${VER}"
+          git checkout -b "$BRANCH"
           git push origin "$BRANCH"
 
           gh pr create \
