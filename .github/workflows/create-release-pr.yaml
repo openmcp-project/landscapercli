@@ -173,7 +173,7 @@ jobs:
         run: |
           TYPE="${{ steps.cc.outputs.release_type }}"
           echo "Executing: task release:${TYPE}"
-          task release:${TYPE}
+          task release:${TYPE} --yes
 
       # ── 9. Read the bumped version from the VERSION file ─────────────────
       - name: Read new version
