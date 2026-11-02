@@ -13,7 +13,7 @@ on:
 jobs:
   release-pr:
     name: Determine and open release PR
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: write        # push release branch
       pull-requests: write   # open PR
@@ -85,6 +85,7 @@ jobs:
 
           RELEASE="none"
           SKIP_LIST=""
+          TRIGGER_LIST=""
 
           while IFS= read -r msg; do
             [[ -z "$msg" ]] && continue
@@ -92,13 +93,20 @@ jobs:
             if [[ "$msg" =~ ^[a-zA-Z]+(\(.+\))?!: ]]; then
               # Exclamation-mark breaking change — always MAJOR
               RELEASE="major"
+              TRIGGER_LIST+=$'\n'"  - ${msg}  → **major** (breaking change)"
 
             elif [[ "$msg" =~ ^feat(\(.+\))?: ]]; then
-              [[ "$RELEASE" != "major" ]] && RELEASE="minor"
+              if [[ "$RELEASE" != "major" ]]; then
+                RELEASE="minor"
+                TRIGGER_LIST+=$'\n'"  - ${msg}  → minor"
+              fi
 
             elif [[ "$msg" =~ ^(fix|refactor|perf|test)(\(.+\))?: ]] || \
                  [[ "$msg" =~ ^chore\(deps\): ]]; then
-              [[ "$RELEASE" == "none" ]] && RELEASE="patch"
+              if [[ "$RELEASE" == "none" ]]; then
+                RELEASE="patch"
+                TRIGGER_LIST+=$'\n'"  - ${msg}  → patch"
+              fi
 
             elif [[ "$msg" =~ ^(build|chore|ci|docs|style)(\(.+\))?: ]]; then
               SKIP_LIST+=$'\n'"  - ${msg}"
@@ -112,16 +120,24 @@ jobs:
           # Commit-body "BREAKING CHANGE:" footer token → MAJOR
           if echo "$BODIES" | grep -qE '^BREAKING CHANGE:'; then
             RELEASE="major"
+            TRIGGER_LIST+=$'\n'"  - *(BREAKING CHANGE footer in commit body)*  → **major**"
           fi
 
           echo "release_type=${RELEASE}" >> "$GITHUB_OUTPUT"
 
-          # Multiline output (heredoc form required by GitHub Actions)
+          # Multiline outputs (heredoc form required by GitHub Actions)
           DELIM="CC_SKIP_$(openssl rand -hex 6)"
           {
             echo "skip_list<<${DELIM}"
             echo "${SKIP_LIST}"
             echo "${DELIM}"
+          } >> "$GITHUB_OUTPUT"
+
+          DELIM2="CC_TRIGGER_$(openssl rand -hex 6)"
+          {
+            echo "trigger_list<<${DELIM2}"
+            echo "${TRIGGER_LIST}"
+            echo "${DELIM2}"
           } >> "$GITHUB_OUTPUT"
 
           echo "Determined release type: ${RELEASE}"
@@ -224,17 +240,20 @@ jobs:
           git push origin "$BRANCH"
 
           gh pr create \
-            --title "chore: release v${VER}" \
-            --body  "## Release \`v${VER}\`
+            --title "chore: release ${VER}" \
+            --body  "## Release \`${VER}\`
 
           This PR was opened automatically by the release workflow.
 
           | | |
           |---|---|
-          | **Version** | \`v${VER}\` |
+          | **Version** | \`${VER}\` |
           | **Release type** | \`${TYPE}\` |
           | **Triggered by** | \`${{ github.event_name }}\` |
           | **Commits analysed** | since \`${{ steps.last-tag.outputs.tag }}\` |
+
+          ### Commits driving this release
+          ${{ steps.cc.outputs.trigger_list }}
 
           Merging this PR will publish the component." \
             --base "$DEFAULT_BRANCH" \
