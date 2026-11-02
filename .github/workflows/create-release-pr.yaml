@@ -8,6 +8,7 @@ name: Create Release PR (reusable)
 
 on:
   workflow_call:
+  workflow_dispatch:
 
 jobs:
   release-pr:
