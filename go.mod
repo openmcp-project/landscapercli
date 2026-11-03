@@ -8,18 +8,18 @@ require (
 	github.com/go-logr/zapr v1.3.0
 	github.com/golang/mock v1.7.0-rc.1
 	github.com/onsi/ginkgo/v2 v2.33.1
-	github.com/openmcp-project/landscaper v1.4.3
-	github.com/openmcp-project/landscaper/apis v1.4.3
+	github.com/openmcp-project/landscaper v1.4.4
+	github.com/openmcp-project/landscaper/apis v1.4.4
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
 	github.com/stretchr/testify v1.12.1
 	go.uber.org/zap v1.28.0
 	golang.org/x/lint v0.0.0-20241112194109-818c5a804067
 	gopkg.in/yaml.v3 v3.0.1
-	k8s.io/api v0.37.1
-	k8s.io/apiextensions-apiserver v0.37.1
-	k8s.io/apimachinery v0.37.1
-	k8s.io/client-go v0.37.1
+	k8s.io/api v0.37.2
+	k8s.io/apiextensions-apiserver v0.37.2
+	k8s.io/apimachinery v0.37.2
+	k8s.io/client-go v0.37.2
 	k8s.io/utils v0.0.0-20261023123148-ca04ba58ecab
 	sigs.k8s.io/controller-runtime v0.25.2
 	sigs.k8s.io/yaml v1.6.0
@@ -250,8 +250,8 @@ require (
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.1 // indirect
 	github.com/opencontainers/runtime-spec v1.3.0 // indirect
-	github.com/openmcp-project/landscaper/controller-utils v1.4.3 // indirect
-	github.com/openmcp-project/landscaper/legacy-component-spec/bindings-go v1.4.3 // indirect
+	github.com/openmcp-project/landscaper/controller-utils v1.4.4 // indirect
+	github.com/openmcp-project/landscaper/legacy-component-spec/bindings-go v1.4.4 // indirect
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.4.3 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
