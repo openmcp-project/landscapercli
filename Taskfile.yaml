@@ -11,6 +11,17 @@ includes:
       REPO_URL: 'https://github.com/openmcp-project/landscapercli'
       GENERATE_DOCS_INDEX: "false"
       CHART_COMPONENTS: "[]"
+  common: # imported a second time so that overwriting task definitions can call the overwritten task with a 'c:' prefix
+    taskfile: hack/common/Taskfile_controller.yaml
+    internal: true
+    aliases:
+    - c
+    vars:
+      CODE_DIRS: '{{.ROOT_DIR}}/cmd/... {{.ROOT_DIR}}/pkg/... {{.ROOT_DIR}}/integration-test/...'
+      COMPONENTS: landscapercli
+      REPO_URL: 'https://github.com/openmcp-project/landscapercli'
+      GENERATE_DOCS_INDEX: "false"
+      CHART_COMPONENTS: "[]"
 
 # Makefile target mapping:
 #   help            -> 'help' task (shared)
