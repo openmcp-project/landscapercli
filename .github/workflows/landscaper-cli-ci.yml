@@ -10,8 +10,6 @@ on:
     branches:
       - '**'
   workflow_dispatch:
-  schedule:
-    - cron: '*/10 * * * *'  # create_upgrade_prs every 10 minutes
 
 concurrency:
   group: landscaper-cli-${{ github.ref }}
@@ -51,13 +49,6 @@ jobs:
       - name: Run verify
         run: |
           task verify
-          
-      - name: Upload verify artifact
-        if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
-        with:
-          name: verify
-          path: ${{ env.OUT_DIR }}/ || ${{ github.workspace }}
 
   build:
     name: Build (Cross)
@@ -120,6 +111,7 @@ jobs:
       - name: Run Integration Test (PR)
         run: |
           task dev_integration_test -- --target-clustername=cli-pr
+
       - name: Upload integration_test artifact
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
@@ -145,6 +137,7 @@ jobs:
       - name: Run Integration Test (Release)
         run: |
           task dev_integration_test -- --target-clustername=cli-re
+
       - name: Upload integration_test artifact
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
@@ -152,86 +145,24 @@ jobs:
           path: integration_test
           retention-days: 7
 
-  generate_docs:
-    name: Generate Docs
+  create_release:
+    name: Create GitHub Release
     runs-on: ubuntu-latest
-    needs: [verify]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-
-      - name: Set up Go
-        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
-        with:
-          go-version-file: go.mod
-
-      - name: Generate docs
-        run: |
-          # Assuming a task or script exists to generate docs
-          task generate_docs || true
-
-      - name: Publish docs to source branch (optional)
-        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
-        run: |
-          # Commit or push docs if required
-          # git config user.name "github-actions"
-          # git config user.email "actions@github.com"
-          # git add docs && git commit -m "docs: update" || true
-          echo "Docs generated."
-
-  update_release:
-    name: Update Release (tag)
-    runs-on: ubuntu-latest
-    needs: [build, integration_test_release, generate_docs]
+    needs: [build, integration_test_release]
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
     steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          fetch-depth: 0
-
       - name: Download build artifacts
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
+          pattern: build-*
+          merge-multiple: true
           path: ${{ env.OUT_DIR }}
-
-      - name: Set up Python
-        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
-        with:
-          python-version: '3.x'
-
-      - name: Run update_release.py
-        run: |
-          python3 ./update_release.py --out-path "${{ env.OUT_DIR }}"
 
       - name: Publish release artifacts
         uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3
         with:
-          tag_name: ${{ github.ref }}
-          name: Release ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
           files: ${{ env.OUT_DIR }}/*.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  create_upgrade_prs:
-    name: Create Upgrade PRs (Cron)
-    runs-on: ubuntu-latest
-    if: github.event_name == 'schedule'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-
-      - name: Install Task
-        uses: arduino/setup-task@c0bc642852239c2689f73f4ea6459c29405f3c52 # v3.0.0
-        with:
-          version: 3.x
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Run update component deps
-        run: |
-          # Implement tasks which create upgrade PRs, matching Concourse traits
-          task update_component_deps || true
-      - name: Create PRs (if any)
-        run: |
-          # Use git cli / gh cli to create PRs; ensure secrets are configured
-          echo "Create PRs placeholder"
