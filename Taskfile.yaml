@@ -64,3 +64,86 @@ tasks:
                   -X github.com/openmcp-project/landscapercli/pkg/version.gitTreeState={{.GIT_TREE_STATE}} \
                   -X github.com/openmcp-project/landscapercli/pkg/version.gitCommit={{.GIT_COMMIT}}" \
         {{.ROOT_DIR}}/cmd/landscapercli
+
+  dev_integration_test:
+    desc: "  Run integration tests against a Gardener shoot cluster."
+    cmds:
+    - |
+      set -euo pipefail
+
+      # Parse --target-clustername from CLI args
+      TARGET_CLUSTER=""
+      for arg in {{.CLI_ARGS}}; do
+        case "$arg" in
+          --target-clustername=*|-target-clustername=*|TARGET_CLUSTERNAME=*)
+            TARGET_CLUSTER="${arg#*=}"
+            ;;
+        esac
+      done
+      if [ -z "$TARGET_CLUSTER" ]; then
+        echo "Required parameter: --target-clustername"
+        exit 1
+      fi
+
+      # Install helm if not available
+      if ! command -v helm &>/dev/null; then
+        echo "Installing helm..."
+        curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+      fi
+      HELM_BIN="$(command -v helm)"
+      ln -sf "$HELM_BIN" /usr/local/bin/helm3 2>/dev/null || true
+      export HELM_EXECUTABLE="$HELM_BIN"
+
+      # Install kubectl if not available
+      if ! command -v kubectl &>/dev/null; then
+        echo "Installing kubectl..."
+        KUBECTL_VERSION="$(curl -fsSL https://dl.k8s.io/release/stable.txt)"
+        curl -fsSLO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+        install -m 0755 kubectl /usr/local/bin/kubectl
+        rm kubectl
+      fi
+
+      # Decode garden kubeconfig from env var
+      GARDEN_KUBECONFIG="$(mktemp)"
+      trap 'rm -f "$GARDEN_KUBECONFIG"' EXIT
+
+      if [ -n "${GARDEN_KUBE_CONFIG_B64:-}" ]; then
+        printf '%s' "$GARDEN_KUBE_CONFIG_B64" | base64 -d > "$GARDEN_KUBECONFIG"
+      elif [ -n "${GARDEN_KUBE_CONFIG:-}" ]; then
+        printf '%s' "$GARDEN_KUBE_CONFIG" > "$GARDEN_KUBECONFIG"
+      else
+        echo "Required env var: GARDEN_KUBE_CONFIG_B64 (base64-encoded) or GARDEN_KUBE_CONFIG (raw YAML)"
+        exit 1
+      fi
+
+      # Request shoot admin kubeconfig via Gardener API
+      GARDEN_NAMESPACE="garden-laas"
+      EXPIRATION_SECONDS=86400
+      echo "Getting admin kubeconfig for shoot '${TARGET_CLUSTER}' in namespace '${GARDEN_NAMESPACE}'"
+
+      ADMIN_KUBECONFIG_JSON="$(kubectl create \
+        --kubeconfig="$GARDEN_KUBECONFIG" \
+        --raw "/apis/core.gardener.cloud/v1beta1/namespaces/${GARDEN_NAMESPACE}/shoots/${TARGET_CLUSTER}/adminkubeconfig" \
+        -f - <<EOF
+      {"apiVersion":"authentication.gardener.cloud/v1alpha1","kind":"AdminKubeconfigRequest","spec":{"expirationSeconds":${EXPIRATION_SECONDS}}}
+      EOF
+      )"
+
+      SHOOT_KUBECONFIG="$(mktemp)"
+      trap 'rm -f "$GARDEN_KUBECONFIG" "$SHOOT_KUBECONFIG"' EXIT
+      printf '%s' "$ADMIN_KUBECONFIG_JSON" | python3 -c "
+      import sys, json, base64
+      data = json.load(sys.stdin)
+      sys.stdout.write(base64.b64decode(data['status']['kubeconfig']).decode('utf-8'))
+      " > "$SHOOT_KUBECONFIG"
+
+      # Run integration tests and save output
+      OUTPUT_DIR="{{.ROOT_DIR}}/integration_test"
+      mkdir -p "$OUTPUT_DIR"
+
+      cd "{{.ROOT_DIR}}/integration-test"
+      go run main.go \
+        --kubeconfig "$SHOOT_KUBECONFIG" \
+        --landscaper-namespace "lndscpr-int-test" \
+        --test-namespace "ls-cli-inttest" \
+        --max-retries 10 2>&1 | tee "$OUTPUT_DIR/out"

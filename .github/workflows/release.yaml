@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - VERSION
 
 permissions:
   contents: write # we need this to be able to push tags
