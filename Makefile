@@ -73,25 +73,15 @@ component-push: ocm ## Upload the components into the registry. Must be called a
 LOCALBIN ?= $(REPO_ROOT)/bin
 
 ## Tool Binaries
-LINTER ?= $(LOCALBIN)/golangci-lint
 OCM ?= $(LOCALBIN)/ocm
 
 ## Tool Versions
-# renovate: datasource=github-releases depName=golangci-lint packageName=golangci/golangci-lint
-LINTER_VERSION ?= v2.15.0
 # renovate: datasource=github-releases depName=open-component-model/ocm
 OCM_VERSION ?= v0.54.0
 
 .PHONY: localbin
 localbin: ## Creates the local bin folder, if it doesn't exist. Not meant to be called manually, used as requirement for the other tool commands.
 	@test -d $(LOCALBIN) || mkdir -p $(LOCALBIN)
-
-.PHONY: goimports
-goimports: localbin ## Download goimports locally if necessary. If wrong version is installed, it will be overwritten.
-	@test -s $(FORMATTER) && test -s $(LOCALBIN)/goimports_version && cat $(LOCALBIN)/goimports_version | grep -q $(FORMATTER_VERSION) || \
-	( echo "Installing goimports $(FORMATTER_VERSION) ..."; \
-	GOBIN=$(LOCALBIN) go install golang.org/x/tools/cmd/goimports@$(FORMATTER_VERSION) && \
-	echo $(FORMATTER_VERSION) > $(LOCALBIN)/goimports_version )
 
 .PHONY: ocm
 ocm: localbin ## Install OCM CLI if necessary. If wrong version is installed, it will be overwritten.
