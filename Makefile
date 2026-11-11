@@ -19,15 +19,16 @@ help: ## Display this help.
 
 .PHONY: revendor
 revendor: ## Runs 'go mod tidy' for all go modules in this repo.
-	@$(REPO_ROOT)/hack/revendor.sh
+	@task generate:tidy
 
 .PHONY: format
-format: goimports ## Runs the formatter.
-	@@FORMATTER=$(FORMATTER) $(REPO_ROOT)/hack/format.sh $(CODE_DIRS)
+format: ## Runs the formatter.
+	@task generate:format
 
 .PHONY: check
-check: golangci-lint goimports ## Runs linter, 'go vet', and checks if the formatter has been run.
-	@LINTER=$(LINTER) FORMATTER=$(FORMATTER) $(REPO_ROOT)/hack/check.sh --golangci-lint-config="$(REPO_ROOT)/.golangci.yaml" $(CODE_DIRS)
+check: ## Runs linter, 'go vet', and checks if the formatter has been run.
+	@task validate:lint
+	@task validate:vet
 
 .PHONY: verify
 verify: check ## Alias for 'make check'.
@@ -72,17 +73,14 @@ component-push: ocm ## Upload the components into the registry. Must be called a
 LOCALBIN ?= $(REPO_ROOT)/bin
 
 ## Tool Binaries
-FORMATTER ?= $(LOCALBIN)/goimports
 LINTER ?= $(LOCALBIN)/golangci-lint
 OCM ?= $(LOCALBIN)/ocm
 
 ## Tool Versions
-# renovate: datasource=github-tags depName=tools packageName=golang/tools
-FORMATTER_VERSION ?= v0.52.0
 # renovate: datasource=github-releases depName=golangci-lint packageName=golangci/golangci-lint
 LINTER_VERSION ?= v2.15.0
 # renovate: datasource=github-releases depName=open-component-model/ocm
-OCM_VERSION ?= 0.54.0
+OCM_VERSION ?= v0.54.0
 
 .PHONY: localbin
 localbin: ## Creates the local bin folder, if it doesn't exist. Not meant to be called manually, used as requirement for the other tool commands.
@@ -94,12 +92,6 @@ goimports: localbin ## Download goimports locally if necessary. If wrong version
 	( echo "Installing goimports $(FORMATTER_VERSION) ..."; \
 	GOBIN=$(LOCALBIN) go install golang.org/x/tools/cmd/goimports@$(FORMATTER_VERSION) && \
 	echo $(FORMATTER_VERSION) > $(LOCALBIN)/goimports_version )
-
-.PHONY: golangci-lint
-golangci-lint: localbin ## Download golangci-lint locally if necessary. If wrong version is installed, it will be overwritten.
-	@test -s $(LINTER) && $(LINTER) --version | grep -q $(LINTER_VERSION) || \
-	( echo "Installing golangci-lint $(LINTER_VERSION) ..."; \
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(LOCALBIN) $(LINTER_VERSION) )
 
 .PHONY: ocm
 ocm: localbin ## Install OCM CLI if necessary. If wrong version is installed, it will be overwritten.
